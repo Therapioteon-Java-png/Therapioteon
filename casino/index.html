@@ -11,73 +11,85 @@ body{margin:0;background:radial-gradient(ellipse at top,#162c4b 0,#080d19 58%);c
 header{padding:30px 18px;text-align:center;border-bottom:1px solid var(--line);background:#080d19aa}
 h1{margin:0;color:var(--cyan);letter-spacing:4px;font-size:clamp(27px,5vw,44px)}
 header p{color:var(--muted);margin:8px 0 0}
-nav{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding:16px}
-a{color:#eaf8ff;text-decoration:none;border:1px solid var(--line);background:#13213a;padding:10px 16px;border-radius:10px}
 main{width:min(760px,94%);margin:30px auto 60px}
 .panel{background:linear-gradient(145deg,#14233c,#0d1729);border:1px solid var(--line);border-radius:18px;padding:26px;margin:16px 0;box-shadow:0 12px 36px #0005;text-align:center}
 h2{margin:0 0 12px;color:var(--gold)}
 .machine{display:flex;justify-content:center;gap:12px;margin:28px 0}
-.reel{width:clamp(72px,20vw,120px);height:105px;display:grid;place-items:center;font-size:54px;background:#070c16;border:2px solid #4b6387;border-radius:14px}
+.reel{width:clamp(90px,25vw,150px);height:105px;display:grid;place-items:center;font-size:clamp(22px,5vw,34px);font-weight:1000;background:#070c16;border:2px solid #4b6387;border-radius:14px;overflow:hidden}
+.reel.gold{color:#ffd166;text-shadow:0 0 15px #ffb300;border-color:#ffd166}
 button{cursor:pointer;border:0;border-radius:11px;padding:15px 28px;font-weight:900;font-size:18px;background:linear-gradient(90deg,#17b9d0,#38d8e7);color:#06111d}
 button:disabled{opacity:.55;cursor:not-allowed}
-#message{min-height:40px;color:var(--gold);font-weight:800;font-size:22px}
+#message{min-height:48px;color:var(--gold);font-weight:1000;font-size:clamp(24px,6vw,38px)}
 .hint{color:var(--muted);font-size:14px}
-#number-show{min-height:68px;margin:12px auto;color:var(--gold);font-size:clamp(28px,7vw,48px);font-weight:1000;letter-spacing:5px;overflow-wrap:anywhere}
-.big-win{animation:win-pop .55s ease-in-out infinite alternate;text-shadow:0 0 12px #ffd166,0 0 32px #ff9f1c}
+#number-show{min-height:72px;margin:12px auto;color:#65e8ff;font-size:clamp(24px,6vw,42px);font-weight:1000;letter-spacing:5px;overflow-wrap:anywhere;text-shadow:0 0 12px #1acbe8}
+.numbers-moving{animation:number-jitter .09s steps(2,end) infinite}
+.big-win{animation:win-pop .45s ease-in-out infinite alternate;text-shadow:0 0 12px #ffd166,0 0 32px #ff9f1c}
+@keyframes number-jitter{0%{transform:translate(0,0) skewX(0)}25%{transform:translate(2px,-3px) skewX(-3deg)}50%{transform:translate(-3px,2px) skewX(3deg)}75%{transform:translate(3px,1px) skewX(-2deg)}100%{transform:translate(-1px,-2px) skewX(2deg)}}
 @keyframes win-pop{from{transform:scale(1)}to{transform:scale(1.12)}}
 footer{text-align:center;color:var(--muted);padding:24px;border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
 <header><h1>THERAPIOTEON</h1><p>Mini hra pro zábavu • pouze animace</p></header>
-<nav><a href="../">← Zpět na THERAPIOTEON</a></nav>
 <main>
 <section class="panel">
 <h2>✨ Tři symboly</h2>
-<p class="hint">Klikni na OTOČIT a sleduj animaci. Nejsou tu žádné sázky, body ani skutečné výhry.</p>
-<div class="machine"><div class="reel" id="r1">🍒</div><div class="reel" id="r2">⭐</div><div class="reel" id="r3">🍀</div></div>
+<p class="hint">Klikni na OTOČIT a sleduj rychle se měnící čísla a symboly. Bez sázek, peněz a odměn.</p>
+<div class="machine"><div class="reel" id="r1">7</div><div class="reel" id="r2">3</div><div class="reel" id="r3">9</div></div>
 <button id="spin">OTOČIT</button>
 <div id="message" aria-live="polite"></div>
-<div id="number-show" aria-live="polite"></div>
+<div id="number-show" aria-live="polite">739 204 681</div>
 </section>
 </main>
 <footer>THERAPIOTEON • Jen mini hra pro zábavu. Bez sázek a odměn.</footer>
 <script>
 (()=>{
-const symbols=['🍒','🍋','⭐','🍀','💎','🔔','🟡'];
-const gold='🟡';
+const symbols=['1','2','3','4','5','6','7','8','9','0','⭐','🍒','💎','ZLATO'];
+const gold='ZLATO';
 let spinning=false;
 const reels=[document.getElementById('r1'),document.getElementById('r2'),document.getElementById('r3')];
 const message=document.getElementById('message');
 const numberShow=document.getElementById('number-show');
 const button=document.getElementById('spin');
+const randomDigits=()=>Array.from({length:18},()=>Math.floor(Math.random()*10)).join('');
 button.addEventListener('click',()=>{
  if(spinning)return;
- spinning=true;button.disabled=true;message.textContent='Točí se…';numberShow.textContent='';numberShow.classList.remove('big-win');
+ spinning=true;button.disabled=true;message.textContent='TOČENÍ…';message.classList.remove('big-win');
+ numberShow.classList.add('numbers-moving');
  let ticks=0;
  const timer=setInterval(()=>{
-  reels.forEach(reel=>reel.textContent=symbols[Math.floor(Math.random()*symbols.length)]);
+  reels.forEach(reel=>{
+   const value=symbols[Math.floor(Math.random()*symbols.length)];
+   reel.textContent=value;
+   reel.classList.toggle('gold',value===gold);
+  });
+  numberShow.textContent=randomDigits()+' '+randomDigits().slice(0,9);
   ticks++;
-  if(ticks>=16){
+  if(ticks>=30){
    clearInterval(timer);
-   const allGold=reels.every(reel=>reel.textContent===gold);
+   const allGold=Math.random()<0.12;
+   reels.forEach((reel,index)=>{
+    reel.textContent=allGold?gold:['7','3','9'][index];
+    reel.classList.toggle('gold',allGold);
+   });
+   numberShow.classList.remove('numbers-moving');
    if(allGold){
-    message.textContent='BIG WIN!!!';
+    message.textContent='BIG WIN!';
     message.classList.add('big-win');
     let count=0;
     const digits=setInterval(()=>{
-     numberShow.textContent+=String(Math.floor(Math.random()*10));
+     numberShow.textContent=randomDigits()+' '+randomDigits().slice(0,9);
+     numberShow.classList.add('numbers-moving');
      count++;
-     if(count>=24)clearInterval(digits);
-    },65);
+     if(count>=12){clearInterval(digits);numberShow.classList.remove('numbers-moving');}
+    },75);
    }else{
-    message.textContent='Pěkné otočení! Zkus animaci znovu.';
-    numberShow.textContent='';
-    message.classList.remove('big-win');
+    message.textContent='Pěkné otočení!';
+    numberShow.classList.remove('numbers-moving');
    }
    spinning=false;button.disabled=false;
   }
- },100);
+ },75);
 });
 })();
 </script>
