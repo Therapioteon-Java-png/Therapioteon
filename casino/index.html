@@ -5,72 +5,59 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>THERAPIOTEON CASINO</title>
 <style>
-:root{color-scheme:dark;--bg:#080d19;--panel:#111c31;--line:#263b5c;--cyan:#36d6e7;--gold:#ffd166;--muted:#a9b8d0}
+:root{color-scheme:dark;--line:#263b5c;--cyan:#36d6e7;--gold:#ffd166;--muted:#a9b8d0}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#162c4b 0,#080d19 58%);color:#f3f7ff;font:16px system-ui,Segoe UI,sans-serif;min-height:100vh}
-header{padding:26px 18px;text-align:center;border-bottom:1px solid var(--line);background:#080d19aa}
+header{padding:30px 18px;text-align:center;border-bottom:1px solid var(--line);background:#080d19aa}
 h1{margin:0;color:var(--cyan);letter-spacing:4px;font-size:clamp(27px,5vw,44px)}header p{color:var(--muted);margin:8px 0 0}
-nav{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding:16px}a,.navbtn{color:#eaf8ff;text-decoration:none;border:1px solid var(--line);background:#13213a;padding:10px 16px;border-radius:10px}
-main{width:min(960px,94%);margin:24px auto 60px}.panel{background:linear-gradient(145deg,#14233c,#0d1729);border:1px solid var(--line);border-radius:18px;padding:22px;margin:16px 0;box-shadow:0 12px 36px #0005}
+nav{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding:16px}a{color:#eaf8ff;text-decoration:none;border:1px solid var(--line);background:#13213a;padding:10px 16px;border-radius:10px}
+main{width:min(760px,94%);margin:30px auto 60px}.panel{background:linear-gradient(145deg,#14233c,#0d1729);border:1px solid var(--line);border-radius:18px;padding:26px;margin:16px 0;box-shadow:0 12px 36px #0005;text-align:center}
 h2{margin:0 0 12px;color:var(--gold)}.balance{font-size:28px;color:var(--gold);font-weight:800}
-.machine{display:flex;justify-content:center;gap:12px;margin:24px 0}.reel{width:clamp(72px,20vw,120px);height:100px;display:grid;place-items:center;font-size:54px;background:#070c16;border:2px solid #4b6387;border-radius:14px}
-button{cursor:pointer;border:0;border-radius:11px;padding:13px 20px;font-weight:800;font-size:16px;background:linear-gradient(90deg,#17b9d0,#38d8e7);color:#06111d}
-button:disabled{opacity:.55;cursor:not-allowed}.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.secondary{background:#263b5c;color:white}
-#message{min-height:28px;text-align:center;color:var(--gold);font-weight:700}.hint{color:var(--muted);font-size:14px}
-input{width:100%;padding:13px;border-radius:10px;border:1px solid var(--line);background:#070d18;color:white;font:16px ui-monospace,monospace}
-#output{background:#050a12;border:1px solid var(--line);border-radius:10px;padding:12px;min-height:110px;max-height:220px;overflow:auto;white-space:pre-wrap;color:#bdefff;font:14px ui-monospace,monospace}
+.machine{display:flex;justify-content:center;gap:12px;margin:28px 0}.reel{width:clamp(72px,20vw,120px);height:105px;display:grid;place-items:center;font-size:54px;background:#070c16;border:2px solid #4b6387;border-radius:14px}
+button{cursor:pointer;border:0;border-radius:11px;padding:15px 28px;font-weight:900;font-size:18px;background:linear-gradient(90deg,#17b9d0,#38d8e7);color:#06111d}
+button:disabled{opacity:.55;cursor:not-allowed}#message{min-height:30px;color:var(--gold);font-weight:700}.hint{color:var(--muted);font-size:14px}
 footer{text-align:center;color:var(--muted);padding:24px;border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
-<header><h1>THERAPIOTEON CASINO</h1><p>Herní zóna • virtuální body • žádné skutečné peníze</p></header>
-<nav><a href="../">← Zpět na THERAPIOTEON</a><a href="#automat">Automat</a><a href="#konzole">Příkazová konzole</a></nav>
+<header><h1>THERAPIOTEON CASINO</h1><p>Virtuální automat • herní body bez peněžní hodnoty</p></header>
+<nav><a href="../">← Zpět na THERAPIOTEON</a></nav>
 <main>
 <section class="panel">
-<h2>Vítej v herní zóně</h2>
-<p>Vyzkoušej automat a příkazy. Všechno běží přímo v prohlížeči. Body jsou pouze virtuální, nelze je koupit ani směnit za peníze nebo ceny.</p>
-<div>Tvůj zůstatek: <span class="balance" id="balance">100</span> <span class="hint">bodů</span></div>
-</section>
-<section class="panel" id="automat">
 <h2>🎰 Automat THERAPIOTEON</h2>
-<p class="hint">Jedno otočení stojí 10 virtuálních bodů. Výhra přidá body zpět.</p>
+<p class="hint">Stiskni tlačítko a roztoč tři válce. Jedno otočení stojí 10 virtuálních bodů.</p>
+<div>Tvůj zůstatek: <span class="balance" id="balance">100</span> <span class="hint">bodů</span></div>
 <div class="machine"><div class="reel" id="r1">🍒</div><div class="reel" id="r2">⭐</div><div class="reel" id="r3">🍀</div></div>
-<div class="actions"><button id="spin">OTOČIT ZA 10 BODŮ</button><button class="secondary" id="daily">DENNÍ BONUS +25</button></div>
+<button id="spin">OTOČIT</button>
 <p id="message" aria-live="polite"></p>
 </section>
-<section class="panel" id="konzole">
-<h2>⌨ Příkazová konzole</h2>
-<p class="hint">Funkční příkazy: /help, /balance, /spin, /daily, /clear</p>
-<div id="output" aria-live="polite">THERAPIOTEON CASINO [verze 1.0]
-Napiš /help pro seznam příkazů.</div>
-<form id="commandForm" style="margin-top:12px;display:flex;gap:8px"><input id="command" autocomplete="off" placeholder="Napiš příkaz, například /balance"><button type="submit">ODESLAT</button></form>
-</section>
 </main>
-<footer>THERAPIOTEON • Virtuální herní body bez peněžní hodnoty</footer>
+<footer>THERAPIOTEON • Pouze virtuální body, žádné skutečné peníze.</footer>
 <script>
 (()=>{
 const symbols=['🍒','🍋','⭐','🍀','💎','🔔'];
-let points=100;
-const balance=document.getElementById('balance'),message=document.getElementById('message');
-const output=document.getElementById('output'),spinButton=document.getElementById('spin');
-let lastDaily='';
+let points=100, spinning=false;
+const balance=document.getElementById('balance'),message=document.getElementById('message'),button=document.getElementById('spin');
 function showBalance(){balance.textContent=points}
-function log(s){output.textContent+='\n'+s;output.scrollTop=output.scrollHeight}
-function spin(){if(points<10){message.textContent='Nemáš dost bodů. Zkus /daily.';return 'Chybí body. Použij /daily.'}
-points-=10;
-const a=symbols[Math.floor(Math.random()*symbols.length)],b=symbols[Math.floor(Math.random()*symbols.length)],c=symbols[Math.floor(Math.random()*symbols.length)];
-document.getElementById('r1').textContent=a;document.getElementById('r2').textContent=b;document.getElementById('r3').textContent=c;
-let prize=0;if(a===b&&b===c)prize=100;else if(a===b||b===c||a===c)prize=25;
-points+=prize;showBalance();
-const result=prize?'Výhra! Získáváš '+prize+' bodů.':'Tentokrát bez výhry.';
-message.textContent=result+' Zůstatek: '+points+' bodů.';
-return 'Automat: '+a+' | '+b+' | '+c+' — '+result+' Zůstatek: '+points}
-function daily(){const today=new Date().toISOString().slice(0,10);if(lastDaily===today)return 'Denní bonus už dnes byl vyzvednut.';lastDaily=today;points+=25;showBalance();return 'Denní bonus +25 bodů. Zůstatek: '+points}
-spinButton.addEventListener('click',()=>{log('/spin > '+spin())});
-document.getElementById('daily').addEventListener('click',()=>{const r=daily();message.textContent=r;log('/daily > '+r)});
-document.getElementById('commandForm').addEventListener('submit',e=>{e.preventDefault();const field=document.getElementById('command'),cmd=field.value.trim().toLowerCase();if(!cmd)return;field.value='';log('> '+cmd);let result='';
-switch(cmd){case '/help':result='Příkazy: /help, /balance, /spin, /daily, /clear';break;case '/balance':result='Máš '+points+' virtuálních bodů.';break;case '/spin':result=spin();break;case '/daily':result=daily();break;case '/clear':output.textContent='Konzole vymazána.';return;default:result='Neznámý příkaz. Napiš /help.'}
-log(result)});
+button.addEventListener('click',()=>{
+ if(spinning)return;
+ if(points<10){message.textContent='Nemáš dost virtuálních bodů.';return}
+ spinning=true;button.disabled=true;points-=10;showBalance();message.textContent='Automat se točí…';
+ let ticks=0;
+ const timer=setInterval(()=>{
+  for(let i=1;i<=3;i++)document.getElementById('r'+i).textContent=symbols[Math.floor(Math.random()*symbols.length)];
+  ticks++;
+  if(ticks>=12){
+   clearInterval(timer);
+   const a=document.getElementById('r1').textContent,b=document.getElementById('r2').textContent,c=document.getElementById('r3').textContent;
+   let prize=0;if(a===b&&b===c)prize=100;else if(a===b||b===c||a===c)prize=25;
+   points+=prize;showBalance();
+   message.textContent=prize?'🎉 Výhra: +'+prize+' bodů!':'Tentokrát bez výhry. Zkus znovu!';
+   spinning=false;button.disabled=false;
+  }
+ },100);
+});
 showBalance();
 })();
 </script>
-</body></html>
+</body>
+</html>
