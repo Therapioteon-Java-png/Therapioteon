@@ -7,7 +7,7 @@
 <style>
 :root{color-scheme:dark;--line:#263b5c;--cyan:#36d6e7;--gold:#ffd166;--muted:#a9b8d0}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at top,#162c4b 0,#080d19 58%);color:#f3f7ff;font:16px system-ui,Segoe UI,sans-serif;min-height:100vh}
+body{margin:0;background:radial-gradient(ellipse at top,#162c4b 0,#080d19 58%);color:#f3f7ff;font:16px system-ui,Segoe UI,sans-serif;min-height:100vh;overflow-x:hidden}
 header{padding:30px 18px;text-align:center;border-bottom:1px solid var(--line);background:#080d19aa}
 h1{margin:0;color:var(--cyan);letter-spacing:4px;font-size:clamp(27px,5vw,44px)}
 header p{color:var(--muted);margin:8px 0 0}
@@ -21,41 +21,81 @@ button{cursor:pointer;border:0;border-radius:11px;padding:15px 28px;font-weight:
 button:disabled{opacity:.55;cursor:not-allowed}
 #message{min-height:48px;color:var(--gold);font-weight:1000;font-size:clamp(24px,6vw,38px)}
 .hint{color:var(--muted);font-size:14px}
+.score{font-size:22px;font-weight:900;color:#ffd166;margin:12px 0}
 #number-show{min-height:72px;margin:12px auto;color:#65e8ff;font-size:clamp(24px,6vw,42px);font-weight:1000;letter-spacing:5px;overflow-wrap:anywhere;text-shadow:0 0 12px #1acbe8}
 .numbers-moving{animation:number-jitter .09s steps(2,end) infinite}
 .big-win{animation:win-pop .45s ease-in-out infinite alternate;text-shadow:0 0 12px #ffd166,0 0 32px #ff9f1c}
+#number-rain{position:fixed;inset:0;z-index:5;pointer-events:none;overflow:hidden;display:none;background:#02081735}
+#number-rain.active{display:block}
+.rain-number{position:absolute;top:-15vh;color:#63eaff;font-size:clamp(20px,4vw,48px);font-weight:1000;text-shadow:0 0 12px #00cfff;white-space:nowrap;animation:fall linear infinite}
+#win-overlay{position:fixed;inset:0;z-index:8;display:none;place-items:center;text-align:center;background:#050914df;padding:20px}
+#win-overlay.active{display:grid}
+.win-card{border:2px solid #ffd166;border-radius:24px;padding:clamp(24px,6vw,60px);background:linear-gradient(145deg,#35250b,#111b31);box-shadow:0 0 60px #ffb30088;animation:win-pop .45s ease-in-out infinite alternate}
+.win-title{font-size:clamp(48px,12vw,110px);font-weight:1000;color:#ffd166;text-shadow:0 0 20px #ffb300}
+.win-points{font-size:clamp(28px,6vw,54px);font-weight:1000;color:#fff}
+#close-win{margin-top:20px}
+@keyframes fall{to{transform:translateY(125vh) rotate(360deg)}}
 @keyframes number-jitter{0%{transform:translate(0,0) skewX(0)}25%{transform:translate(2px,-3px) skewX(-3deg)}50%{transform:translate(-3px,2px) skewX(3deg)}75%{transform:translate(3px,1px) skewX(-2deg)}100%{transform:translate(-1px,-2px) skewX(2deg)}}
-@keyframes win-pop{from{transform:scale(1)}to{transform:scale(1.12)}}
+@keyframes win-pop{from{transform:scale(1)}to{transform:scale(1.08)}}
 footer{text-align:center;color:var(--muted);padding:24px;border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
-<header><h1>THERAPIOTEON</h1><p>Mini hra pro zábavu • pouze animace</p></header>
+<div id="number-rain" aria-hidden="true"></div>
+<div id="win-overlay" role="dialog" aria-modal="true" aria-label="BIG WIN">
+ <div class="win-card">
+  <div class="win-title">BIG WIN!</div>
+  <div class="win-points">+100 BODŮ</div>
+  <button id="close-win">POKRAČOVAT</button>
+ </div>
+</div>
+<header><h1>THERAPIOTEON</h1><p>Mini hra pro zábavu • virtuální body bez peněz</p></header>
 <main>
 <section class="panel">
 <h2>✨ Tři symboly</h2>
-<p class="hint">Klikni na OTOČIT a sleduj rychle se měnící čísla a symboly. Bez sázek, peněz a odměn.</p>
+<p class="hint">Čísla létají přes celou obrazovku. Tři symboly ZLATO přidají 100 virtuálních bodů.</p>
+<div class="score">MOJE BODY: <span id="score">0</span></div>
 <div class="machine"><div class="reel" id="r1">7</div><div class="reel" id="r2">3</div><div class="reel" id="r3">9</div></div>
 <button id="spin">OTOČIT</button>
 <div id="message" aria-live="polite"></div>
 <div id="number-show" aria-live="polite">739 204 681</div>
 </section>
 </main>
-<footer>THERAPIOTEON • Jen mini hra pro zábavu. Bez sázek a odměn.</footer>
+<footer>THERAPIOTEON • Virtuální body nemají peněžní hodnotu.</footer>
 <script>
 (()=>{
 const symbols=['1','2','3','4','5','6','7','8','9','0','⭐','🍒','💎','ZLATO'];
 const gold='ZLATO';
 let spinning=false;
+let points=Number(localStorage.getItem('therapioteonPoints')||0);
 const reels=[document.getElementById('r1'),document.getElementById('r2'),document.getElementById('r3')];
 const message=document.getElementById('message');
 const numberShow=document.getElementById('number-show');
 const button=document.getElementById('spin');
-const randomDigits=()=>Array.from({length:18},()=>Math.floor(Math.random()*10)).join('');
+const score=document.getElementById('score');
+const rain=document.getElementById('number-rain');
+const overlay=document.getElementById('win-overlay');
+score.textContent=points;
+const randomDigits=()=>Array.from({length:22},()=>Math.floor(Math.random()*10)).join('');
+function startRain(){
+ rain.innerHTML='';
+ for(let i=0;i<34;i++){
+  const item=document.createElement('span');
+  item.className='rain-number';
+  item.textContent=randomDigits().slice(0,Math.floor(Math.random()*10)+5);
+  item.style.left=(Math.random()*100)+'%';
+  item.style.animationDuration=(1.8+Math.random()*2.8)+'s';
+  item.style.animationDelay=(-Math.random()*3)+'s';
+  rain.appendChild(item);
+ }
+ rain.classList.add('active');
+}
+function stopRain(){rain.classList.remove('active');rain.innerHTML='';}
+document.getElementById('close-win').addEventListener('click',()=>overlay.classList.remove('active'));
 button.addEventListener('click',()=>{
  if(spinning)return;
  spinning=true;button.disabled=true;message.textContent='TOČENÍ…';message.classList.remove('big-win');
- numberShow.classList.add('numbers-moving');
+ numberShow.classList.add('numbers-moving');startRain();
  let ticks=0;
  const timer=setInterval(()=>{
   reels.forEach(reel=>{
@@ -73,19 +113,18 @@ button.addEventListener('click',()=>{
     reel.classList.toggle('gold',allGold);
    });
    numberShow.classList.remove('numbers-moving');
+   stopRain();
    if(allGold){
+    points+=100;
+    localStorage.setItem('therapioteonPoints',String(points));
+    score.textContent=points;
     message.textContent='BIG WIN!';
     message.classList.add('big-win');
-    let count=0;
-    const digits=setInterval(()=>{
-     numberShow.textContent=randomDigits()+' '+randomDigits().slice(0,9);
-     numberShow.classList.add('numbers-moving');
-     count++;
-     if(count>=12){clearInterval(digits);numberShow.classList.remove('numbers-moving');}
-    },75);
+    overlay.classList.add('active');
+    numberShow.textContent='100 BODŮ!';
    }else{
     message.textContent='Pěkné otočení!';
-    numberShow.classList.remove('numbers-moving');
+    numberShow.textContent='ZKUS TO ZNOVU';
    }
    spinning=false;button.disabled=false;
   }
